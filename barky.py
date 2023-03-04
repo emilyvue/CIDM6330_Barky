@@ -72,6 +72,11 @@ def get_bookmark_id_for_deletion():
     return get_user_input("Enter a bookmark ID to delete")
 
 
+def clear_screen():
+    clear = 'cls' if os .name == 'nt' else 'clear'
+    os.system(clear)
+
+
 def get_github_import_options():
     return {
         "github_username": get_user_input("GitHub username"),
@@ -94,7 +99,6 @@ def get_new_bookmark_info():
 
 def loop():
 
-    clear_screen()
     # All steps for showing and selecting options
     # https://www.w3schools.com/python/python_dictionaries.asp
     options = {
@@ -125,9 +129,30 @@ def loop():
         ),
         "Q": Option("Quit", commands.QuitCommand()),
     }
-    print_options(options)
 
+    clear_screen()
+    print_options(options)
     chosen_option = get_option_choice(options)
     clear_screen()
     chosen_option.choose()
-    _ = input("Press ENTER to return to menu")
+    _ = input("Press Enter to return to menu")
+
+
+if __name__ == '__main__':
+    commands.CreateBookmarksTableCommand().execute()
+
+    while True:  # <3>
+        loop()
+
+
+def for_listings_only():
+    options = {
+        "A": Option("Add a bookmark", commands.AddBookmarkCommand()),
+        "B": Option("List bookmarks by date", commands.ListBookmarksCommand()),
+        "T": Option("List bookmarks by title", commands.ListBookmarksCommand(order_by="title")),
+        "E": Option("Edit a bookmark", commands.EditBookmarkCommand()),
+        "D": Option("Delete a bookmark", commands.DeleteBookmarkCommand()),
+        "G": Option("Import GitHub stars", commands.ImportGitHubStarsCommand()),
+        "Q": Option("Quit", commands.QuitCommand()),
+    }
+    print_options(options)
